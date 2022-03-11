@@ -163,6 +163,7 @@ class S3Adapter {
     if (this._directAccess) {
       let presignedUrl = '';
       if (this._presignedUrl) {
+        const fileKey = `${this._bucketPrefix}${fileName}`;
         const params = { Bucket: this._bucket, Key: fileKey, Expires: this._presignedUrlExpires };
         // Always use the "getObject" operation, and we recommend that you protect the URL
         // appropriately: https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html
