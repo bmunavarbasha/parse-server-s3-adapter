@@ -167,9 +167,7 @@ class S3Adapter {
         // Always use the "getObject" operation, and we recommend that you protect the URL
         // appropriately: https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html
         presignedUrl = this._s3Client.getSignedUrl('getObject', params);
-        if (!presignedUrl) {
-          return presignedUrl;
-        }
+        return presignedUrl;
       }
       if (this._baseUrl) {
         if (typeof this._baseUrl === 'function') {
