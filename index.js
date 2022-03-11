@@ -34,6 +34,8 @@ class S3Adapter {
     this._fileAcl = options.fileAcl;
     this._baseUrl = options.baseUrl;
     this._baseUrlDirect = options.baseUrlDirect;
+    this._presignedUrl = options.presignedUrl;
+    this._presignedUrlExpires = parseInt(options.presignedUrlExpires, 900);
     this._signatureVersion = options.signatureVersion;
     this._globalCacheControl = options.globalCacheControl;
     this._encryption = options.ServerSideEncryption;
@@ -159,6 +161,16 @@ class S3Adapter {
   getFileLocation(config, filename) {
     const fileName = filename.split('/').map(encodeURIComponent).join('/');
     if (this._directAccess) {
+      let presignedUrl = '';
+      if (this._presignedUrl) {
+        const params = { Bucket: this._bucket, Key: fileKey, Expires: this._presignedUrlExpires };
+        // Always use the "getObject" operation, and we recommend that you protect the URL
+        // appropriately: https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html
+        presignedUrl = this._s3Client.getSignedUrl('getObject', params);
+        if (!presignedUrl) {
+          return presignedUrl;
+        }
+      }
       if (this._baseUrl) {
         if (typeof this._baseUrl === 'function') {
           if (this._baseUrlDirect) {
